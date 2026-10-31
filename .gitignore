@@ -27,3 +27,8 @@ ui-walk-shots/
 *.njsproj
 *.sln
 *.sw?
+
+# Local AI / editor agent outputs
+Claude outputs/
+.claude/
+.cursor/
