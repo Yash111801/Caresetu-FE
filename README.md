@@ -27,7 +27,7 @@ Companion API: **Caresetu-BE** (Java 21 / Spring Boot / MySQL). Run both for a f
 ### Install & run
 
 ```bash
-git clone https://github.com/Sooriyaprasannan/Caresetu-FE.git Caresetu-Fe
+git clone https://github.com/Yash111801/Caresetu-FE.git Caresetu-Fe
 cd Caresetu-Fe
 cp .env.example .env
 # Edit if needed — match BE port:
