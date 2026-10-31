@@ -64,15 +64,20 @@ Related seed side-data (visible on detail / Messages / Alerts):
 
 ## 3. Working clinical pathway (create → next steps)
 
-Happy path exercised by `npm run test:pathway` (headed Playwright). Stages must match chips on patient detail.
+Automated today by `npm run test:pathway`: ASHA → CHO → MO → **BOOKED**.  
+The **full** clinical chain continues through hospital, **Diagnostics (PATH)**, and **Specialist (ONCO)**.
 
 ```
-ASHA  New screening  →  stage CHO
-CHO   Forward to MO  →  stage REVIEW
-MO    Approve & book →  stage BOOKED (+ Timeline, Print slip)
+ASHA  New screening     →  CHO
+CHO   Forward to MO     →  REVIEW
+MO    Approve & book    →  BOOKED   (+ Timeline, Print slip)
+HOSP  Record visit      →  TESTED   (hospital doctor)
+PATH  Update tests      →  ONCO_REQ (if POSITIVE)  or  CLOSED
+MO    Book oncology     →  SPECIALIST
+ONCO  Record consultation → CLOSED / treatment
 ```
 
-### Step-by-step (manual)
+### Step-by-step (manual) — booking leg
 
 1. **ASHA** (`9876543210`) → **New screening**
    - Fill: Full name, Age (empty by default — do not leave demo `45`), Sex, Mobile, Village, PHC, Findings (≥ meaningful text).
@@ -88,11 +93,21 @@ MO    Approve & book →  stage BOOKED (+ Timeline, Print slip)
    - Pick a day → **Confirm booking**.
    - Assert: chip **BOOKED**; **Timeline** section; **Print slip** enabled.
 
-4. Optional later stages (seeded or after hospital flow):
-   - HOSP on BOOKED (visit due): Attend / Can't serve → often **TESTED**.
-   - PATH on TESTED: report result → may move to **ONCO_REQ** / close paths.
-   - MO on ONCO_REQ: Book oncology → **SPECIALIST**.
-   - ONCO on SPECIALIST: Record consultation.
+### Step-by-step (manual) — hospital → diagnostics → specialist
+
+4. **HOSP** (`9876543213`) — hospital doctor — open a **BOOKED** patient with visit ≤ today (seeded: **CS-GNR-0003** Ramesh Thakor)  
+   - Actions: **Record visit** (`attend`) / **Could not serve**.  
+   - After attend → stage **TESTED** (tests ordered; PATH alerted).
+
+5. **PATH** (`9876543214`) — Diagnostics — open **TESTED** patient (seeded: **CS-GNR-0005** Hansaben Raval)  
+   - Actions: **Update tests** (`report`) / **Mark inconclusive**.  
+   - Report **POSITIVE** → stage **ONCO_REQ**; non-cancer / negative path → **CLOSED**.
+
+6. **MO** again on **ONCO_REQ** (seeded: **CS-GNR-0006** Prakash Zala)  
+   - **Book oncology** (`obook`) at RCC → stage **SPECIALIST**.
+
+7. **ONCO** (`9876543215`) — Specialist — open **SPECIALIST** with onco visit ≤ today (seeded: **CS-GNR-0007** Naina Joshi)  
+   - **Record consultation** (`consult`) → typically **CLOSED**; may later **Start treatment** (`txstart`) when result is POSITIVE.
 
 ---
 

@@ -57,15 +57,30 @@ src/
 
 ## Clinical pathway (UI)
 
+Full referral chain (field → hospital → **diagnostics** → **specialist**):
+
+```
+ASHA screen → CHO → REVIEW → MO book → BOOKED
+       → HOSP attend → TESTED
+       → PATH (Diagnostics) report
+            ├─ POSITIVE → ONCO_REQ → MO book oncology → SPECIALIST → ONCO consult → CLOSED
+            └─ NEGATIVE / not cancer → CLOSED
+```
+
 | Stage chip | Typical actor | Primary UI action |
 |------------|---------------|-------------------|
 | CHO | ASHA creates screening | Patient detail → await CHO |
 | REVIEW | CHO | Forward to MO |
 | BOOKED | MO | Approve & book slot → print slip |
-| TESTED / ONCO_REQ / … | HOSP / PATH / ONCO | Role-specific actions on patient detail |
-| MISSED | Field follow-up | Rebook / field visit |
+| BOOKED (visit due) | **HOSP** (hospital doctor) | Record visit / Could not serve → **TESTED** |
+| TESTED | **PATH** (Diagnostics) | Update tests / Mark inconclusive |
+| ONCO_REQ | MO | Book oncology (RCC) → **SPECIALIST** |
+| SPECIALIST | **ONCO** (Specialist) | Record consultation → close / treatment |
+| MISSED | MO / ASHA field follow-up | Rebook / field visit |
+| MONITOR | ASHA | Counsel / monitor (low-risk path) |
 
-Happy-path automation: `scripts/ui-pathway-flow.mjs` (ASHA create → CHO forward → MO book).
+Happy-path automation today: `scripts/ui-pathway-flow.mjs` (ASHA → CHO → MO **BOOKED**).  
+Hospital → Diagnostics → Specialist is supported in UI/API; use seeded patients `CS-GNR-0005` (TESTED), `0006` (ONCO_REQ), `0007` (SPECIALIST) to demo those legs.
 
 ## UI kit conventions
 

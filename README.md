@@ -9,6 +9,7 @@ Open-source React SPA for **NP-NCD cancer referral tracking** (CARESETU) — Guj
 | Complete source | this repository (`src/`) |
 | Setup instructions | [below](#setup) |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| Methodology + flowcharts | [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) |
 | Sample data & tests | [`docs/SAMPLE_DATA_AND_TESTS.md`](docs/SAMPLE_DATA_AND_TESTS.md) |
 | License | [`LICENSE`](LICENSE) (MIT) |
 
